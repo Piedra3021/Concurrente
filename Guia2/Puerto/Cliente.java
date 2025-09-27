@@ -1,4 +1,4 @@
-package Puerto;
+package Guia2.Puerto;
 
 public class Cliente {
     String nombre;

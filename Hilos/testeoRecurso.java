@@ -1,6 +1,6 @@
 package Hilos;
 
-import ej7.Cliente;
+import Hilos.ej7.Cliente;
 
 public class testeoRecurso {
     public static void main(String[] args) {

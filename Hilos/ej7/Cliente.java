@@ -1,4 +1,4 @@
-package ej7;
+package Hilos.ej7;
 
 public class Cliente extends Thread { 
 private String nombre; 

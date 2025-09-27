@@ -5,82 +5,57 @@ import java.util.concurrent.Semaphore;
 public class Cliente implements Runnable {
     private String nombre;
     private String impresion;
-    private boolean impreso = false;
-    private Impresora[] impresoras;
-    private Semaphore semPermisos;
+    private GestorImpresoras tienda;
+    private int cantImpresoras;
+    private SalaDeEspera sala;
 
-    public Cliente(String nom, String cad, Impresora[] impreso, int cantImpresoras) {
+    public Cliente(String nom, String cad, GestorImpresoras t, SalaDeEspera se) {
         this.nombre = nom;
         this.impresion = cad;
-        this.impresoras = impreso;
-        semPermisos = new Semaphore(cantImpresoras);
-    }
-
-    public void run2() {
-        int i = 0;
-        int longi = impresoras.length;
-
-        while ((i < longi) && (!impreso)) {
-
-            if (impresoras[i].intentarImprimir()) {
-                try {
-                    Thread.sleep(500);
-                    System.out
-                            .println("El cliente " + nombre + " imprimió " + impresion + " en la impresora " + (i + 1));
-                    impresoras[i].dejarDeImprimir();
-                    impreso = true;
-                } catch (InterruptedException ie) {
-                    System.out.println(ie);
-                }
-            } else {
-                i++;
-
-                if (i == longi) {
-                    i = 0;
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
-                    System.out.println(nombre + " no pudo imprimir en ninguna. Está esperando...");
-                }
-            }
-
-        }
+        this.tienda = t;
+        this.cantImpresoras = t.cantImpresoras();
+        this.sala = se;
     }
 
     public void run() {
-        int i = 0;
-        try {
-            semPermisos.acquire();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        while (!impreso && i<impresoras.length) {
-            if (impresoras[i].intentarImprimir()) {
-                try {
-                    Thread.sleep(500);
-                    System.out
-                            .println("El cliente " + nombre + " imprimió " + impresion + " en la impresora " + (i + 1));
-                    impresoras[i].dejarDeImprimir();
-                    semPermisos.release();
-                    impreso = true;
-                } catch (InterruptedException ie) {
-                    System.out.println(ie);
-                }
-            } else {
-                i++;
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                if(i == impresoras.length){
-                    i = 0;
-                }
-            }
+        boolean exito = false;
+        while (!exito) {
+            exito = this.imprimir();
+            this.manejarSala(exito);
         }
     }
 
+    public void manejarSala(boolean exito) {
+        if (!exito) {
+            sala.sumarContador();
+            System.out.println(Thread.currentThread().getName() + " Entró a la sala de espera.");
+            sala.entrarSalaDeEspera();
+            System.out.println(Thread.currentThread().getName() + " Salió de la sala de espera.");
+        } else {
+            sala.verificarSala();
+        }
+    }
+
+    public boolean imprimir() {
+        boolean exito = false;
+        int i = 0;
+        while (i < cantImpresoras && !exito) {
+            if (tienda.imprimir(i)) {
+                System.out.println(Thread.currentThread().getName() + " Está imprimiendo en la impresoras " + i);
+                exito = true;
+
+                try {
+                    Thread.sleep(1000);
+                    System.out.println(
+                            Thread.currentThread().getName() + " Terminó de imprimir. Liberó la impresora " + i);
+                    tienda.dejarDeImprimir(i);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
+            } else {
+                i++;
+            }
+        }
+        return exito;
+    }
 }

@@ -1,7 +1,7 @@
 package Guia4.Ej4;
 
 public class GestorImpresoras {
-  public static void main(String[] args) {
+  /*public static void main(String[] args) {
     Impresora[] impresoras = new Impresora[3];
     Cliente[] clientes = new Cliente[10];
     Thread[] hilos = new Thread[10];
@@ -17,6 +17,26 @@ public class GestorImpresoras {
     for(int i = 0; i < hilos.length; i++){
         hilos[i].start();
     }
+  }
+*/
+
+
+  private Impresora[] impresoras;
+
+  public GestorImpresoras(Impresora[] impresoras){
+    this.impresoras = impresoras;
+  }
+
+  public boolean imprimir(int i){
+    return impresoras[i].intentarImprimir();
+  }
+
+  public void dejarDeImprimir(int i){
+     impresoras[i].dejarDeImprimir();
+  }
+
+  public int cantImpresoras(){
+    return impresoras.length;
   }
 
 }

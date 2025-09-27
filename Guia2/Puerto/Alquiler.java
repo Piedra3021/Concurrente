@@ -1,8 +1,8 @@
-package Puerto;
+package Guia2.Puerto;
 
 import java.time.*;
 
-import Avion.Avion;
+import Guia2.Avion.Avion;
 public class Alquiler {
     Cliente cliente;
     LocalDateTime fechaI;

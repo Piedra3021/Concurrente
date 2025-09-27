@@ -1,4 +1,4 @@
-package EjHilos;
+package Hilos.EjHilos;
 
 public class Corredor implements Runnable {
     String nombre;

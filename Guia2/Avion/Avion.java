@@ -1,4 +1,4 @@
-package Avion;
+package Guia2.Avion;
 
 public class Avion {
     String matricula;

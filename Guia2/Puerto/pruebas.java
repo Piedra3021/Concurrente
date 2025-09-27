@@ -1,6 +1,6 @@
-package Puerto;
+package Guia2.Puerto;
 
-import Avion.Avion;
+import Guia2.Avion.Avion;
 
 public class pruebas {
     public static void main(String[] args) {

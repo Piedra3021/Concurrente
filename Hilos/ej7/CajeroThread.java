@@ -1,4 +1,4 @@
-package ej7;
+package Hilos.ej7;
 
 public class CajeroThread implements Runnable { 
 private String nombre; 
