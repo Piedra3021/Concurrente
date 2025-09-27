@@ -1,4 +1,4 @@
-package ej7;
+package Hilos.ej7;
 
 public class Cajero {
     private String nombre;
