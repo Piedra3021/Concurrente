@@ -18,15 +18,16 @@ public class recipienteDeAgua {
         try {
             mutex.acquire();
             Oesperando++;
-            System.out.println("Se agregó un átomo de Oxigeno.");
 
             if (Hesperando >= 2) {
+            System.out.println("Se agregó un átomo de Oxigeno. Inicia el proceso");
                 Hesperando = Hesperando - 2;
                 Oesperando--;
                 Hespera.release(2);
                 mutex.release();
                 HacerAgua();
             } else {
+            System.out.println("Un atomo de oxigeno está esperando");
                 mutex.release();
                 Oespera.acquire();
             }
@@ -41,15 +42,16 @@ public class recipienteDeAgua {
         try {
             mutex.acquire();
             Hesperando++;
-            System.out.println("Se agregó un átomo de hidrogeno.");
 
             if(Hesperando>=2 && Oesperando>=1){
+            System.out.println("Se agregó un átomo de hidrogeno. Inicia el proceso");
                 Oesperando--;
                 Hesperando = Hesperando - 2;
                 Oespera.release();
                 mutex.release();
                 HacerAgua();
             }else{
+            System.out.println("Un átomo de hidrogeno está esperando.");
                 mutex.release();
                 Hespera.acquire();
             }
