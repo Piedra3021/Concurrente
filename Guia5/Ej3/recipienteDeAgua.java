@@ -20,14 +20,14 @@ public class recipienteDeAgua {
             Oesperando++;
 
             if (Hesperando >= 2) {
-            System.out.println("Se agregó un átomo de Oxigeno. Inicia el proceso");
+                System.out.println("Se agregó un átomo de Oxigeno. Inicia el proceso");
                 Hesperando = Hesperando - 2;
                 Oesperando--;
                 Hespera.release(2);
                 mutex.release();
                 HacerAgua();
             } else {
-            System.out.println("Un atomo de oxigeno está esperando");
+                System.out.println("Un atomo de oxigeno está esperando");
                 mutex.release();
                 Oespera.acquire();
             }
@@ -38,20 +38,20 @@ public class recipienteDeAgua {
 
     }
 
-    public void Hlisto(){
+    public void Hlisto() {
         try {
             mutex.acquire();
             Hesperando++;
 
-            if(Hesperando>=2 && Oesperando>=1){
-            System.out.println("Se agregó un átomo de hidrogeno. Inicia el proceso");
+            if (Hesperando >= 2 && Oesperando >= 1) {
+                System.out.println("Se agregó un átomo de hidrogeno. Inicia el proceso");
                 Oesperando--;
                 Hesperando = Hesperando - 2;
                 Oespera.release();
                 mutex.release();
                 HacerAgua();
-            }else{
-            System.out.println("Un átomo de hidrogeno está esperando.");
+            } else {
+                System.out.println("Un átomo de hidrogeno está esperando.");
                 mutex.release();
                 Hespera.acquire();
             }
@@ -62,12 +62,14 @@ public class recipienteDeAgua {
 
     public void HacerAgua() {
         try {
-        
-            if(recipiente.tryAcquire()){
-                System.out.println("Se agregó una molécula de agua al recipiente! Quedan: " + recipiente.availablePermits() + " espacios.");
-            }else{
+            mutex.acquire();
+            if (recipiente.tryAcquire()) {
+                System.out.println("Se agregó una molécula de agua al recipiente! Quedan: "
+                        + recipiente.availablePermits() + " espacios.");
+            } else {
                 System.out.println("El recipiente está lleno. No se pudo agregar.");
             }
+            mutex.release();
         } catch (Exception e) {
             // TODO: handle exception
         }
