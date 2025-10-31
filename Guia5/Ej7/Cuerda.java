@@ -53,9 +53,9 @@ public class Cuerda {
             cantB--;
             if (cantB == 0) {
                 dir = 0;
+            sEspera.release(5);
             }
             cantP.release();
-            sEspera.release();
             mutex.release();
         } catch (Exception e) {
             // TODO: handle exception
