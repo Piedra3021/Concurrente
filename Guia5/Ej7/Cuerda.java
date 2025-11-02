@@ -4,10 +4,13 @@ import java.util.concurrent.Semaphore;
 
 public class Cuerda {
     private Semaphore mutex = new Semaphore(1);
-    private Semaphore sEspera = new Semaphore(0);
+    private Semaphore sEsperaIzq = new Semaphore(0);
+    private Semaphore sEsperaDer = new Semaphore(0);
     private Semaphore cantP = new Semaphore(5);
     private int cantB = 0;
     private int dir = 0;
+    private int RL = 0;
+    private int LR = 0;
 
     public Cuerda() {
 
@@ -19,21 +22,21 @@ public class Cuerda {
         try {
             mutex.acquire();
             if (dir == 0) {
-                if (d == 'D') {
+                if (d == 'D' && cantB < 5) {
                     res = true;
                     dir = 1;
-                } else {
+                    cantB++;
+                } else if (cantB < 5) {
                     res = true;
                     dir = 2;
+                    cantB++;
                 }
-            } else if (dir == 1 && d == 'D') {
+            } else if (dir == 1 && d == 'D' && cantB < 5) {
                 res = true;
-            } else if (dir == 2 && d == 'I') {
-                try {
-                    res = true;
-                } catch (Exception e) {
-                    // TODO: handle exception
-                }
+                cantB++;
+            } else if (dir == 2 && d == 'I' && cantB < 5) {
+                res = true;
+                cantB++;
             }
         } catch (InterruptedException ie) {
 
@@ -42,29 +45,67 @@ public class Cuerda {
         return res;
     }
 
-    public void balancearse() throws InterruptedException {
+    public void balancearse(char d) throws InterruptedException {
         cantP.acquire();
-        cantB++;
+        if (d == 'D') {
+            System.out.println(Thread.currentThread().getName() + " se balanceó de derecha a izquierda");
+        } else {
+            System.out.println(Thread.currentThread().getName() + " se balanceó de izq a der");
+        }
     }
 
-    public void dejarBalancearse() {
+    public void dejarBalancearse(char d) {
         try {
             mutex.acquire();
             cantB--;
+            cantP.release();
             if (cantB == 0) {
                 dir = 0;
-            sEspera.release(5);
+                if (d == 'D' && RL != 0) {
+                    sEsperaDer.release(RL);
+                    RL = 0;
+                } else if (d == 'D') {
+                    sEsperaIzq.release();
+                    LR--;
+                } else if (d == 'I' && LR != 0) {
+                    sEsperaIzq.release(LR);
+                    LR = 0;
+                } else {
+                    sEsperaDer.release();
+                    RL--;
+                }
+            } else {
+                if (d == 'D') {
+                    sEsperaDer.release();
+                    if (RL > 0) {
+                        RL--;
+                    }
+                } else {
+                    sEsperaIzq.release();
+                    if (LR > 0) {
+                        LR--;
+                    }
+                }
             }
-            cantP.release();
             mutex.release();
         } catch (Exception e) {
             // TODO: handle exception
         }
     }
 
-    public void esperar() {
+    public void esperar(char d) {
         try {
-            sEspera.acquire();
+            if (d == 'D') {
+                mutex.acquire();
+                RL++;
+                mutex.release();
+                sEsperaDer.acquire();
+            } else {
+                mutex.acquire();
+                LR++;
+                mutex.release();
+                sEsperaIzq.acquire();
+            }
         } catch (Exception e) {
             // TODO: handle exception
         }

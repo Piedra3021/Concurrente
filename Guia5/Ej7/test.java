@@ -13,7 +13,7 @@ public class test {
             }else{
                 babuinos[i] = new Babuino('D', c);
             }
-            hilos[i] = new Thread(babuinos[i]);
+            hilos[i] = new Thread(babuinos[i], "Babuino " + i);
         }
 
         for(int i = 0; i < hilos.length; i++){

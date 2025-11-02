@@ -13,22 +13,19 @@ public class Babuino implements Runnable {
     public void run() {
         boolean exito = cuerda.intentarBalancear(direccion);
         while (!balanceo) {
-            exito = cuerda.intentarBalancear(direccion);
             if (exito) {
-                System.out.println(Thread.currentThread().getName() + " se logró balancear. Dirección: " + direccion);
 
                 try {
-                    cuerda.balancearse();
+                    cuerda.balancearse(direccion);
                     balanceo = true;
                     Thread.sleep(2000);
-                    System.out.println(Thread.currentThread().getName() + " Se dejó de balancear");
-                    cuerda.dejarBalancearse();
+                    cuerda.dejarBalancearse(direccion);
                 } catch (Exception e) {
 
                 }
             } else {
-                System.out.println(Thread.currentThread().getName() + " no pudo balancearse. Dirección: " + direccion);
-                cuerda.esperar();
+                cuerda.esperar(direccion);
+                exito = cuerda.intentarBalancear(direccion);
 
             }
         }
